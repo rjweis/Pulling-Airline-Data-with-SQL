@@ -9,14 +9,19 @@ PRAGMA table_info(airports);
 PRAGMA table_info(flights);
 ```  
 will give us the following:  
+<p align="center">
+  <img width="350" height="60" src="https://github.com/rjweis/sql-queries/blob/master/airlines_columns.PNG">
+</p>  
 
-![airlines columns](https://github.com/rjweis/sql-queries/blob/master/airlines_columns.PNG)
+<p align="center">
+  <img width="375" height="175" src="https://github.com/rjweis/sql-queries/blob/master/airports_columns.PNG">
+</p>  
 
-![airports columns](https://github.com/rjweis/sql-queries/blob/master/airports_columns.PNG)
+<p align="center">
+  <img width="400" height="650" src="https://github.com/rjweis/sql-queries/blob/master/flights_columns.PNG">
+</p>  
 
-![flights_columns](https://github.com/rjweis/sql-queries/blob/master/flights_columns.PNG)  
-
-1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.  
+**1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.**  
 ```SQL
 select distinct origin_airport, 
     (select airport
@@ -29,9 +34,11 @@ select distinct origin_airport,
     distance
 from airports as a, flights as f;
 ```  
-![q1 image](https://github.com/rjweis/sql-queries/blob/master/q1.PNG)
+<p align="center">
+  <img width="860" height="200" src="https://github.com/rjweis/sql-queries/blob/master/q1.PNG">
+</p>  
 
-2. Provide the query that allows you to answer the following question:  Which airport has the most departing flights?  
+**2. Provide the query that allows you to answer the following question:  Which airport has the most departing flights?**  
 ```SQL
 select origin_airport, count(destination_airport) as number_of_departing_flights
 from delays.flights
@@ -40,7 +47,7 @@ order by number_of_departing_flights desc;
 ```  
 ![q2 image](https://github.com/rjweis/sql-queries/blob/master/q2.PNG)
 
-3. Create a report that lists all one-stop flights from Boston (BOS) to San Francisco (SFO). Limit the report to those flights that departed on MONTH=1, DAY=1, and DAY_OF_WEEK=4.  
+**3. Create a report that lists all one-stop flights from Boston (BOS) to San Francisco (SFO). Limit the report to those flights that departed on MONTH=1, DAY=1, and DAY_OF_WEEK=4.**  
 ```SQL
 select first_leg.*, second_leg.*, scheduled_departure_from_layover-scheduled_arrival_at_layover as lay_over_wait
 from (select 
@@ -72,7 +79,7 @@ order by lay_over_wait desc;
 ```  
 ![q3 image](https://github.com/rjweis/sql-queries/blob/master/q3.PNG)
 
-4. Provide the query that allows you to answer the following question:  Which non-stop route has the most cancelled flights in 2015? (CANCELLED -- Flight Cancelled (1 = cancelled))  
+**4. Provide the query that allows you to answer the following question:  Which non-stop route has the most cancelled flights in 2015? (CANCELLED -- Flight Cancelled (1 = cancelled))**  
 ```SQL
 select origin_airport, destination_airport, count(cancelled) as number_of_cancelled_flights
 from delays.flights
@@ -82,7 +89,7 @@ order by number_of_cancelled_flights desc;
 ```  
 ![q4 image](https://github.com/rjweis/sql-queries/blob/master/q4.PNG)
 
-5. Provide the query that allows you to answer the following question:  Which airlines have the most cancelled flights due to Airline/Carrier cancellation reasons? – Your report should list: AIRLINE CODE, AIRLINE NAME, and the count of flights cancelled due to the specified reasons. Order your report by descending count. (CANCELLATION_REASON: A - Airline/Carrier; B - Weather; C - National Air System; D - Security)  
+**5. Provide the query that allows you to answer the following question:  Which airlines have the most cancelled flights due to Airline/Carrier cancellation reasons? – Your report should list: AIRLINE CODE, AIRLINE NAME, and the count of flights cancelled due to the specified reasons. Order your report by descending count. (CANCELLATION_REASON: A - Airline/Carrier; B - Weather; C - National Air System; D - Security)**  
 ```SQL
 select airline, count(cancellation_reason) as number_of_airline_cancellations
 from delays.flights
@@ -92,7 +99,7 @@ order by number_of_airline_cancellations desc;
 ```  
 ![q5 image](https://github.com/rjweis/sql-queries/blob/master/q5.PNG)
 
-6. Provide the query that allows you to answer the following question: Which day of the week has the longest average taxi out. (day_of_week: 1--7, 1 = Monday, 2 = Tuesday, etc)  
+**6. Provide the query that allows you to answer the following question: Which day of the week has the longest average taxi out. (day_of_week: 1--7, 1 = Monday, 2 = Tuesday, etc)**  
 ```SQL
 select avg(taxi_out), day_of_week
 from delays.flights
@@ -101,7 +108,7 @@ order by avg(taxi_out) desc;
 ```  
 ![q6 image](https://github.com/rjweis/sql-queries/blob/master/q6.PNG)
 
-7. Compute the total departure delay of each airline across all flights. Some departure delays may be negative (indicating an early departure); they should reduce the total, so you don't need to handle them specially. Name the output columns AIRLINE and DELAY. Order the report by ascending airline.  
+**7. Compute the total departure delay of each airline across all flights. Some departure delays may be negative (indicating an early departure); they should reduce the total, so you don't need to handle them specially. Name the output columns AIRLINE and DELAY. Order the report by ascending airline.**  
 ```SQL
 select airline as AIRLINE, sum(departure_delay) as DELAY
 from delays.flights
@@ -110,7 +117,7 @@ order by airline asc;
 ```  
 ![q7 image](https://github.com/rjweis/sql-queries/blob/master/q7.PNG)
 
-8. Find the names of all airlines that ever had more than 100 cancellations in one day (i.e., a specific day/month). Return only the names of the airlines (not airline code). Do not return any duplicates (i.e., airlines with the exact same name).   
+**8. Find the names of all airlines that ever had more than 100 cancellations in one day (i.e., a specific day/month). Return only the names of the airlines (not airline code). Do not return any duplicates (i.e., airlines with the exact same name).**   
 ```SQL
 select distinct a.airline
 from delays.airlines as a, delays.flights as f 
