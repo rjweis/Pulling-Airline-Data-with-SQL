@@ -110,7 +110,7 @@ order by airline asc;
 ```  
 ![q7 image](https://github.com/rjweis/sql-queries/blob/master/q7.PNG)
 
-8. Find the names of all airlines that ever had more than 100 cancellations in one day (i.e., a specific day/month). Return only the names of the airlines (not airline code). Do not return any duplicates (i.e., airlines with the exact same name). Name the output column AIRLINE NAME.  
+8. Find the names of all airlines that ever had more than 100 cancellations in one day (i.e., a specific day/month). Return only the names of the airlines (not airline code). Do not return any duplicates (i.e., airlines with the exact same name).   
 ```SQL
 select distinct a.airline
 from delays.airlines as a, delays.flights as f 
