@@ -10,16 +10,17 @@ PRAGMA table_info(flights);
 ```  
 will give us the following:  
 <p align="center">
-  <img width="350" height="60" src="https://github.com/rjweis/sql-queries/blob/master/airlines_columns.PNG">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/airlines_columns.PNG">
 </p>  
 
 <p align="center">
-  <img width="375" height="175" src="https://github.com/rjweis/sql-queries/blob/master/airports_columns.PNG">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/airports_columns.PNG">
 </p>  
 
 <p align="center">
-  <img width="400" height="650" src="https://github.com/rjweis/sql-queries/blob/master/flights_columns.PNG">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/flights_columns.PNG">
 </p>  
+
 
 **1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.**  
 ```SQL
@@ -45,7 +46,9 @@ from delays.flights
 group by origin_airport
 order by number_of_departing_flights desc;
 ```  
-![q2 image](https://github.com/rjweis/sql-queries/blob/master/q2.PNG)
+<p align="center">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/q2.PNG">
+</p>  
 
 **3. Create a report that lists all one-stop flights from Boston (BOS) to San Francisco (SFO). Limit the report to those flights that departed on MONTH=1, DAY=1, and DAY_OF_WEEK=4.**  
 ```SQL
@@ -87,7 +90,9 @@ where cancelled = 1
 group by origin_airport, destination_airport
 order by number_of_cancelled_flights desc;
 ```  
-![q4 image](https://github.com/rjweis/sql-queries/blob/master/q4.PNG)
+<p align="center">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/q4.PNG">
+</p>  
 
 **5. Provide the query that allows you to answer the following question:  Which airlines have the most cancelled flights due to Airline/Carrier cancellation reasons? – Your report should list: AIRLINE CODE, AIRLINE NAME, and the count of flights cancelled due to the specified reasons. Order your report by descending count. (CANCELLATION_REASON: A - Airline/Carrier; B - Weather; C - National Air System; D - Security)**  
 ```SQL
@@ -97,7 +102,9 @@ where cancellation_reason = 'A'
 group by airline
 order by number_of_airline_cancellations desc;
 ```  
-![q5 image](https://github.com/rjweis/sql-queries/blob/master/q5.PNG)
+<p align="center">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/q5.PNG">
+</p>  
 
 **6. Provide the query that allows you to answer the following question: Which day of the week has the longest average taxi out. (day_of_week: 1--7, 1 = Monday, 2 = Tuesday, etc)**  
 ```SQL
@@ -106,7 +113,9 @@ from delays.flights
 group by day_of_week
 order by avg(taxi_out) desc;
 ```  
-![q6 image](https://github.com/rjweis/sql-queries/blob/master/q6.PNG)
+<p align="center">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/q6.PNG">
+</p>  
 
 **7. Compute the total departure delay of each airline across all flights. Some departure delays may be negative (indicating an early departure); they should reduce the total, so you don't need to handle them specially. Name the output columns AIRLINE and DELAY. Order the report by ascending airline.**  
 ```SQL
@@ -115,7 +124,9 @@ from delays.flights
 group by airline
 order by airline asc;
 ```  
-![q7 image](https://github.com/rjweis/sql-queries/blob/master/q7.PNG)
+<p align="center">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/q7.PNG">
+</p>  
 
 **8. Find the names of all airlines that ever had more than 100 cancellations in one day (i.e., a specific day/month). Return only the names of the airlines (not airline code). Do not return any duplicates (i.e., airlines with the exact same name).**   
 ```SQL
@@ -126,5 +137,7 @@ where cancelled = 1
 group by a.airline, month, day
 having count(cancelled) > 100;
 ```  
-![q8 image](https://github.com/rjweis/sql-queries/blob/master/q8.PNG)
+<p align="center">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/q8.PNG">
+</p>  
 
