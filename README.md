@@ -1,2 +1,2 @@
-# sql-queries
+# SQL Queries
 SQL Example Queries
