@@ -32,10 +32,22 @@ will give us the following:
 </p>  
   
   
-We can see that there is not there is not a single ID column that exists in all the tables. However, we do see that `AIRLINE` is contained in both the airlines table and the flights table. Also, `AIRPORT` from the airports table will likely join to the flights table on `ORIGIN_AIRPORT` and `DESTINATION_AIRPORT`. Therefore, we will still be able to pull information from these three tables together. 
+We can see that there is not there is not a single ID column that exists in all the tables. However, we do see that `AIRLINE` is contained in both the airlines table and the flights table. Also, `AIRPORT` or `ACODE` from the airports table will likely join to the flights table on `ORIGIN_AIRPORT` and `DESTINATION_AIRPORT`. We can run a simple query to view these columns and see which one we'll need. 
+```SQL
+select distinct a.airport, a.acode, f.origin_airport, f.destination_airport
+from delays.airports as a, delays.flights as f
+limit 5;
+```  
+<p align="center">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/q1_prep.PNG">
+</p>  
 
+It turns out that `ACODE` is the column we'll be using to join the airports and flights tables. So, now we have everything we need to pull information from all three of these tables together! 
+   
 ### Tasks  
-**1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.**  
+**1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.**    
+For this query, we need to get data from both the airports and flights tables. 
+
 ```SQL
 select distinct origin_airport, 
     (select airport
@@ -49,7 +61,7 @@ select distinct origin_airport,
 from airports as a, flights as f;
 ```  
 <p align="center">
-  <img width="860" height="200" src="https://github.com/rjweis/sql-queries/blob/master/q1.PNG">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/q1.PNG">
 </p>  
 
 **2. Provide the query that allows you to answer the following question:  Which airport has the most departing flights?**  
