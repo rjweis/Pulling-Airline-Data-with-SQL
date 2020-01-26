@@ -34,6 +34,7 @@ will give us the following:
   
 We can see that there is not there is not a single ID column that exists in all the tables. However, we do see that `AIRLINE` is contained in both the airlines table and the flights table. Also, `AIRPORT` from the airports table will likely join to the flights table on `ORIGIN_AIRPORT` and `DESTINATION_AIRPORT`. Therefore, we will still be able to pull information from these three tables together. 
 
+### Tasks  
 **1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.**  
 ```SQL
 select distinct origin_airport, 
