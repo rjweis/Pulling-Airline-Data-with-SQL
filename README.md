@@ -90,7 +90,7 @@ Surprisingly, the airport with the most departures is ATL in Atlanta, Georgia! I
   
 **3. Create a report that lists all one-stop flights from Boston (BOS) to San Francisco (SFO). Limit the report to those flights that departed on MONTH=1, DAY=1, and DAY_OF_WEEK=4.**  
 
-Out of all the questions for this assignment, this one is by far the trickiest. Why? Because need *one-stop flights*, but our data only has *direct-flights*.  
+Out of all the questions for this assignment, this one is by far the trickiest. Why? Because we need *one-stop flights*, but our data only has *direct-flights*.  
   
 However, we can use the fact that the returned records need to begin at BOS and end at SFO to help us think through this problem. Essentially, our query will have two `origin_airport` columns and two `destination_airport` columns. Lets think about it like this:  
 
@@ -147,7 +147,9 @@ order by lay_over_wait desc;
 ```  
 ![q3 image](https://github.com/rjweis/sql-queries/blob/master/q3.PNG)
  
-There we have it! We can use `flight_number` for both legs to visually verify that each row is unique. For instance, in rows 1 and 2 the first leg is identical, but the second leg is different. We also can see that some layovers are very long. If we look closer, we can see that `lay_over_wait` column wasn't created in the way we intended. The wait should actually be the amount of time between 12:39 a.m. and 6:30 p.m., which would be about 18 hours. However, these columns were processed as integers, so the wait was actually computed as 1830 - 39, which gives us our results of 1791. 1791 minutes would be nearly 30 hours, which is a *very* long wait and violates our where clause `f.month = 1`.  
+There we have it! We can use `flight_number` for both legs to visually verify that each row is unique. For instance, in rows 1 and 2 the first leg is identical, but the second leg is different. We also can see that some layovers are very long.   
+
+But, if we look closer, we can see that `lay_over_wait` column wasn't created in the way we intended. The wait should actually be the amount of time between 12:39 a.m. and 6:30 p.m., which would be about 18 hours. However, these columns were processed as integers, so the wait was actually computed as 1830 - 39, which gives us our results of 1791. 1791 minutes would be nearly 30 hours, which is a *very* long wait and violates our where clause `f.day = 1` for both legs of the trip.  
 
 
 **4. Provide the query that allows you to answer the following question:  Which non-stop route has the most cancelled flights in 2015? (CANCELLED -- Flight Cancelled (1 = cancelled))**  
