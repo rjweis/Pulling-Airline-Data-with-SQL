@@ -1,16 +1,24 @@
-# SQL Queries
-SQL Example Queries  
-Data can be found [here.](https://www.kaggle.com/usdot/flight-delays#flights.csv)  
+# SQL Queries  
+### Introduction  
 
-We can use `PRAGMA table_info(table_name)` to see the columns available in each table. For example,  
+Extracting, transforming, and loading data is a vital skill for any analytics professional. In this markdown, we'll take a look at some queries I completed for an assignment at the [Institute for Advanced Analytics.](https://analytics.ncsu.edu/)  
+
+This assignment is about extracting information from a database to answer questions one would have about airline travel. The database contains three tables: airlines, airports, and flights. I completed this assignment in SQLiteStudio, and the data can be found [here.](https://www.kaggle.com/usdot/flight-delays#flights.csv)  
+
+First, lets take a look at the columns contained in these tables. We can use `PRAGMA table_info(table_name)` to accomplish this. For example,  
 ```SQL
 PRAGMA table_info(airlines);
 PRAGMA table_info(airports);
 PRAGMA table_info(flights);
 ```  
 will give us the following:  
+
+<body>
+  <p align="center">text</p>
+</body>
+  
 <p align="center">
-  <img src="https://github.com/rjweis/sql-queries/blob/master/airlines_columns.PNG">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/airlines_columns.PNG">  
 </p>  
 
 <p align="center">
@@ -20,7 +28,9 @@ will give us the following:
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/flights_columns.PNG">
 </p>  
-
+  
+  
+We can see that there is not there is not a single ID column that exists in all the tables. However, we do see that `AIRLINE` is contained in both the airlines table and the flights table. Also, `AIRPORT` from the airports table will likely join to the flights table on `ORIGIN_AIRPORT` and `DESTINATION_AIRPORT`. Therefore, we will still be able to pull information from these three tables together. 
 
 **1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.**  
 ```SQL
