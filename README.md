@@ -45,8 +45,10 @@ limit 5;
 It turns out that `ACODE` is the column we'll be using to join the airports and flights tables. So, now we have everything we need to pull information from all three of these tables together! 
    
 ### Tasks  
-**1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.**    
-For this query, we need to get data from both the airports and flights tables. `origin_airport` and `destination_airport` and are the airport codes from the flights table, so to get their respective names from the airports table we can use subqueries. `where a.acode = f.origin_airport` and `where a.acode = f.destination_airport` will help us get this information.  
+**1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.**  
+
+For this query, we need to get data from both the airports and flights tables. `origin_airport` and `destination_airport` and are the airport codes from the flights table, so to get their respective names from the airports table we can use subqueries. `where a.acode = f.origin_airport` and `where a.acode = f.destination_airport` will help us get this information. 
+
 ```SQL
 select distinct origin_airport, 
     (select airport
@@ -65,7 +67,8 @@ Now, we know the distance between these airports:
   <img src="https://github.com/rjweis/sql-queries/blob/master/q1.PNG">
 </p>  
 
-**2. Provide the query that allows you to answer the following question:  Which airport has the most departing flights?** 
+**2. Provide the query that allows you to answer the following question:  Which airport has the most departing flights?**  
+
 To answer this question, we need to determine if we'll use `origin_airport` or `destination_airport` for our query. We know that for each airport, we want the count of all departing flights -- in other words, we want the destination airports, which we can obtain with `count(destination_airport)`. To get the count for *each* airport, we can use `group by origin_airport`. Then, to see which airport has the most, we can simply order our query in descending order with `desc` and use the first row to answer this question.  
 
 ```SQL
