@@ -113,6 +113,8 @@ This is because 1) if you are flying from Boston, you are necessarily going some
 Also, we must keep in mind that we need ample time at our layover to switch flights and to account for any potential delays on our first flight. Lets give ourselves at least 60 minutes. In other words,  
 
 <p align="center"><strong>scheduled_departure_from_origin_airport2 - scheduled_arrival_at_destination_airport1 > 60</strong></p>
+  
+Now that we have figured out the logic, we now need to write it in SQL. I find it helpful to break down the flight into a `first_leg` and `second_leg`, which is what I named first and second subqueries respectively. I also used other aliases in the query to try to make the code a bit more intuitive.   
 
 ```SQL
 select first_leg.*, second_leg.*, scheduled_departure_from_layover-scheduled_arrival_at_layover as lay_over_wait
@@ -144,6 +146,9 @@ where lay_over_one = lay_over_two and
 order by lay_over_wait desc; 
 ```  
 ![q3 image](https://github.com/rjweis/sql-queries/blob/master/q3.PNG)
+ 
+There we have it! We can use `flight_number` for both legs to visually verify that each row is unique. For instance, in rows 1 and 2 the first leg is identical, but the second leg is different. We also can see that some layovers are very long. If we look closer, we can see that `lay_over_wait` column wasn't created in the way we intended. The wait should actually be the amount of time between 12:39 a.m. and 6:30 p.m., which would be about 18 hours. However, these columns were processed as integers, so the wait was actually computed as 1830 - 39, which gives us our results of 1791. 1791 minutes would be nearly 30 hours, which is a *very* long wait and violates our where clause `f.month = 1`.  
+
 
 **4. Provide the query that allows you to answer the following question:  Which non-stop route has the most cancelled flights in 2015? (CANCELLED -- Flight Cancelled (1 = cancelled))**  
 ```SQL
