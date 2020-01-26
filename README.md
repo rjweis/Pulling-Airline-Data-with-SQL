@@ -110,6 +110,9 @@ Further, we know that:
 
 This is because 1) if you are flying from Boston, you are necessarily going somewhere that is *not* Boston; 2) if you are taking a one-stop flight to San Francisco, by definition your stop *can't* be San Francisco; and 3) the destination of your first flight *must* be the origin of your second flight.  
 
+Also, we must keep in mind that we need ample time at our layover to switch flights and to account for any potential delays on our first flight. Lets give ourselves at least 60 minutes. In other words,  
+
+<p align="center"><strong>scheduled_departure_from_origin_airport2 - scheduled_arrival_at_destination_airport1 > 60</strong></p>
 
 ```SQL
 select first_leg.*, second_leg.*, scheduled_departure_from_layover-scheduled_arrival_at_layover as lay_over_wait
