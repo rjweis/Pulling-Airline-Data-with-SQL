@@ -13,19 +13,19 @@ PRAGMA table_info(flights);
 ```  
 will give us the following:  
 
-<p align="center">airlines</p>
+<p align="center"><code>airlines</code></p>
   
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/airlines_columns.PNG">  
 </p>  
   
-<p align="center">airports</p>  
+<p align="center"><code>airports</code></p>  
   
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/airports_columns.PNG">
 </p>  
   
-<p align="center">flights</p>  
+<p align="center"><code>flights</code></p>  
   
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/flights_columns.PNG">
