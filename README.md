@@ -47,7 +47,7 @@ It turns out that `ACODE` is the column we'll be using to join the airports and 
 ### Tasks  
 **1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.**  
 
-For this query, we need to get data from both the airports and flights tables. `origin_airport` and `destination_airport` and are the airport codes from the flights table, so to get their respective names from the airports table we can use subqueries. `where a.acode = f.origin_airport` and `where a.acode = f.destination_airport` will help us get this information. 
+For this query, we need to get data from both the airports and flights tables. `origin_airport` and `destination_airport` are the airport codes from the flights table, so to get their respective names from the airports table we can use subqueries. `where a.acode = f.origin_airport` and `where a.acode = f.destination_airport` will help us get this information. 
 
 ```SQL
 select distinct origin_airport, 
