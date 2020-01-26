@@ -1,6 +1,7 @@
-# SQL Queries  
-### Introduction  
+# Using SQLite on Airlines, Airports, and Flights Data    
+![airport](https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fdam%2Fimageserve%2F1149089169%2F960x0.jpg%3Ffit%3Dscale)  
 
+### Introduction 
 Extracting, transforming, and loading data is a vital skill for any analytics professional. In this markdown, we'll take a look at some queries I completed for an assignment at the [Institute for Advanced Analytics.](https://analytics.ncsu.edu/)  
 
 This assignment is about extracting information from a database to answer questions one would have about airline travel. The database contains three tables: airlines, airports, and flights. I completed this assignment in SQLiteStudio, and the data can be found [here.](https://www.kaggle.com/usdot/flight-delays#flights.csv)  
@@ -147,10 +148,54 @@ order by lay_over_wait desc;
 ```  
 ![q3 image](https://github.com/rjweis/sql-queries/blob/master/q3.PNG)
  
-There we have it! We can use `flight_number` for both legs to visually verify that each row is unique. For instance, in rows 1 and 2 the first leg is identical, but the second leg is different. We also can see that some layovers are very long.   
+There we have it! We can use `flight_number` for both legs to visually verify that each row is unique. For instance, in rows 1 and 2 the first leg is identical, but the second leg is different.    
 
-But, if we look closer, we can see that `lay_over_wait` column wasn't created in the way we intended. The wait should actually be the amount of time between 12:39 a.m. and 6:30 p.m., which would be about 18 hours. However, these columns were processed as integers, so the wait was actually computed as 1830 - 39, which gives us our results of 1791. 1791 minutes would be nearly 30 hours, which is a *very* long wait and violates our where clause `f.day = 1` for both legs of the trip.  
+But, if we look closer, **we can see that `lay_over_wait` column wasn't created in the way we intended.** The wait should actually be the amount of time between 12:39 a.m. and 6:30 p.m., which would be about 18 hours. However, these columns were processed as integers, so the wait was actually computed as 1830 - 39, which gives us our results of 1791. 1791 minutes would be nearly 30 hours, which is a *very* long wait and violates our where clause `f.day = 1` for both legs of the trip.  
 
+After searching all over [sqlite.org](https://www.sqlite.org/) and [Stack Overflow](https://stackoverflow.com/), it seems that fixing this type of issue isn't a strong suit of SQLite. We still can pull this off, though! The best solution I've been able to come up with is to duplicate the flights table, insert a colon in the `scheduled_departure` and `scheduled_arrival` columns, and then use `julianday()` to calculate the `lay_over_wait_time`. Going into further detail is beyond the scope of this markdown, but feel free to share any other solutions to solve this problem a little more elegantly.   
+
+```SQL
+create table delays.flights_v1 as
+select *, 
+    cast(
+        substr(scheduled_departure, 1, 2) || ':' || substr(scheduled_departure, 3, 2) as text) as new_scheduled_arrival,
+    cast(
+        substr(scheduled_arrival, 1, 2) || ':' || substr(scheduled_arrival, 3, 2) as text) as new_scheduled_departure
+from delays.flights;
+
+select first_leg.*, second_leg.*, cast((
+    julianday(scheduled_departure_from_layover) - julianday(scheduled_arrival_at_layover)
+    ) * 24 * 60 as intgeger) as lay_over_wait
+from (select 
+        distinct flight_number as first_flight_number, 
+        origin_airport, 
+        new_scheduled_arrival as scheduled_arrival_at_layover, 
+        destination_airport as lay_over_one
+        from flights_v1 as f
+        where f.origin_airport = "BOS" and f.destination_airport != "SFO" and
+        f.month = 1 and
+        f.day = 1 and 
+        f.day_of_week= 4
+        ) as first_leg,
+        
+    (select 
+        origin_airport as lay_over_two, 
+        destination_airport, 
+        new_scheduled_departure as scheduled_departure_from_layover, 
+        flight_number as second_flight_number
+        from flights_v1 as f
+        where f.origin_airport != "BOS" and f.destination_airport = "SFO" and
+        f.month = 1 and
+        f.day = 1 and 
+        f.day_of_week= 4) as second_leg
+        
+where lay_over_one = lay_over_two and 
+    lay_over_wait > 60
+order by lay_over_wait desc; 
+```  
+This finally gives us the result we were looking for:  
+
+![q3 image](https://github.com/rjweis/sql-queries/blob/master/q3v1.PNG)  
 
 **4. Provide the query that allows you to answer the following question:  Which non-stop route has the most cancelled flights in 2015? (CANCELLED -- Flight Cancelled (1 = cancelled))**  
 ```SQL
