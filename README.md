@@ -13,7 +13,7 @@ PRAGMA table_info(flights);
 ```  
 will give us the following:  
 
-<p align="center"><code>airlines</code></p>
+<p align="center"><bold>airlines</bold></p>
   
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/airlines_columns.PNG">  
