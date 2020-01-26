@@ -19,13 +19,13 @@ will give us the following:
   <img src="https://github.com/rjweis/sql-queries/blob/master/airlines_columns.PNG">  
 </p>  
   
-<p align="center"><code>airports</code></p>  
+<p align="center"><strong>airports</strong></p>  
   
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/airports_columns.PNG">
 </p>  
   
-<p align="center"><code>flights</code></p>  
+<p align="center"><strong>flights</strong></p>  
   
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/flights_columns.PNG">
