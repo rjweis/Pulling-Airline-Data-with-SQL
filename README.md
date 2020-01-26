@@ -89,6 +89,28 @@ Surprisingly, the airport with the most departures is ATL in Atlanta, Georgia! I
 </p> 
   
 **3. Create a report that lists all one-stop flights from Boston (BOS) to San Francisco (SFO). Limit the report to those flights that departed on MONTH=1, DAY=1, and DAY_OF_WEEK=4.**  
+
+Out of all the questions for this assignment, this one is by far the trickiest. Why? Because need *one-stop flights*, but our data only has *direct-flights*.  
+  
+However, we can use the fact that the returned records need to begin at BOS and end at SFO to help us think through this problem. Essentially, our query will have two `origin_airport` columns and two `destination_airport` columns. Lets think about it like this:  
+
+<p align="center"><strong>origin_airport1 --> destination_airport1 --> origin_airport2 --> destination_airport2</strong></p>  
+  
+Filling in our origin and destination airport constraints, we have:  
+
+<p align="center"><strong>BOS --> destination_airport1 --> origin_airport2 --> SFO</strong></p>  
+  
+Further, we know that:  
+
+<p align="center"><strong>destination_airport1 != BOS</strong></p>  
+
+<p align="center"><strong>origin_airport2 != SFO</strong></p>   
+
+<p align="center"><strong>destination_airport1 = origin_airport2</strong></p>  
+
+This is because 1) if you are flying from Boston, you are necessarily going somewhere that is *not* Boston; 2) if you are taking a one-stop flight to San Francisco, by definition your stop *can't* be San Francisco; and 3) the destination of your first flight *must* be the origin of your second flight.  
+
+
 ```SQL
 select first_leg.*, second_leg.*, scheduled_departure_from_layover-scheduled_arrival_at_layover as lay_over_wait
 from (select 
