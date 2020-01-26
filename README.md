@@ -65,17 +65,26 @@ Now, we know the distance between these airports:
   <img src="https://github.com/rjweis/sql-queries/blob/master/q1.PNG">
 </p>  
 
-**2. Provide the query that allows you to answer the following question:  Which airport has the most departing flights?**  
+**2. Provide the query that allows you to answer the following question:  Which airport has the most departing flights?** 
+To answer this question, we need to determine if we'll use `origin_airport` or `destination_airport` for our query. We know that for each airport, we want the count of all departing flights -- in other words, we want the destination airports, which we can obtain with `count(destination_airport)`. To get the count for *each* airport, we can use `group by origin_airport`. Then, to see which airport has the most, we can simply order our query in descending order with `desc` and use the first row to answer this question.  
+
 ```SQL
 select origin_airport, count(destination_airport) as number_of_departing_flights
 from delays.flights
 group by origin_airport
 order by number_of_departing_flights desc;
 ```  
+  
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/q2.PNG">
 </p>  
 
+Surprisingly, the airport with the most departures is ATL in Atlanta, Georgia! I personally thought it would have been JFK in New York, given the number of incoming and outgoing international flights. A quick Google search does, however, confirm that our data isn't lying to us. ATL was *the busiest airport in the world* in 2018!   
+  
+<p align="center">
+  <img src="https://github.com/rjweis/sql-queries/blob/master/atl.PNG">
+</p> 
+  
 **3. Create a report that lists all one-stop flights from Boston (BOS) to San Francisco (SFO). Limit the report to those flights that departed on MONTH=1, DAY=1, and DAY_OF_WEEK=4.**  
 ```SQL
 select first_leg.*, second_leg.*, scheduled_departure_from_layover-scheduled_arrival_at_layover as lay_over_wait
