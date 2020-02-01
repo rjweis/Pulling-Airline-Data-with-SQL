@@ -4,7 +4,7 @@
 ### Introduction 
 Extracting, transforming, and loading data is a vital skill for any analytics professional. In this markdown, we'll take a look at some queries I completed for an assignment at the [Institute for Advanced Analytics.](https://analytics.ncsu.edu/)  
 
-This assignment is about extracting information from a database to answer questions one would have about airline travel. The database contains three tables: airlines, airports, and flights. I completed this assignment in SQLiteStudio, and the data can be found [here.](https://www.kaggle.com/usdot/flight-delays#flights.csv)  
+This assignment is about extracting information from a database to answer questions one would have about airline travel. The database contains three tables -- airlines, airports, and flights -- and they can be found [here.](https://www.kaggle.com/usdot/flight-delays#flights.csv)  
 
 First, lets take a look at the columns contained in these tables. We can use `PRAGMA table_info(table_name)` to accomplish this. For example,  
 ```SQL
@@ -43,7 +43,7 @@ limit 5;
   <img src="https://github.com/rjweis/sql-queries/blob/master/q1_prep.PNG">
 </p>  
 
-It turns out that `ACODE` is the column we'll be using to join the airports and flights tables. So, now we have everything we need to pull information from all three of these tables together! 
+It turns out that `ACODE` is the column we'll be using to join the airports and flights tables. So, now we have everything we need to put all three of these tables together! 
    
 ### Tasks  
 **1. Create a report that lists: ORIGIN_AIRPORT, ORIGIN AIRPORT NAME, DESTINATION_AIRPORT, DESTINATION AIRPORT NAME, AND DISTANCE.**  
@@ -70,7 +70,7 @@ Now, we know the distance between these airports:
 
 **2. Provide the query that allows you to answer the following question:  Which airport has the most departing flights?**  
 
-To answer this question, we need to determine if we'll use `origin_airport` or `destination_airport` for our query. We know that for each airport, we want the count of all departing flights -- in other words, we want the destination airports, which we can obtain with `count(destination_airport)`. To get the count for *each* airport, we can use `group by origin_airport`. Then, to see which airport has the most, we can simply order our query in descending order with `desc` and use the first row to answer this question.  
+To answer this question, we need to determine if we'll use `origin_airport` or `destination_airport` for our query. We know that for each airport, we want the count of all departing flights. In other words, we want the destination airports, which we can obtain with `count(destination_airport)`. To get the count for *each* airport, we can use `group by origin_airport`. Then, to see which airport has the most, we can simply order our query in descending order with `desc` and use the first row to answer this question.  
 
 ```SQL
 select origin_airport, count(destination_airport) as number_of_departing_flights
@@ -115,7 +115,7 @@ Also, we must keep in mind that we need ample time at our layover to switch flig
 
 <p align="center"><strong>scheduled_departure_from_origin_airport2 - scheduled_arrival_at_destination_airport1 > 60</strong></p>
   
-Now that we have figured out the logic, we now need to write it in SQL. I find it helpful to break down the flight into a `first_leg` and `second_leg`, which is what I named first and second subqueries respectively. I also used other aliases in the query to try to make the code a bit more intuitive.   
+Now that we have figured out the logic, let's write the query. I find it helpful to break down the flight into a `first_leg` and `second_leg`, which is what I named first and second subqueries respectively. I also used other aliases in the query to try to make the code a bit more intuitive.   
 
 ```SQL
 select first_leg.*, second_leg.*, scheduled_departure_from_layover-scheduled_arrival_at_layover as lay_over_wait
@@ -148,9 +148,9 @@ order by lay_over_wait desc;
 ```  
 ![q3 image](https://github.com/rjweis/sql-queries/blob/master/q3.PNG)
  
-There we have it! We can use `flight_number` for both legs to visually verify that each row is unique. For instance, in rows 1 and 2 the first leg is identical, but the second leg is different.    
+We can use `flight_number` for both legs to visually verify that each row is unique. For instance, in rows 1 and 2 the first leg is identical, but the second leg is different.    
 
-But, if we look closer, **we can see that `lay_over_wait` column wasn't created in the way we intended.** The wait should actually be the amount of time between 12:39 a.m. and 6:30 p.m., which would be about 18 hours. However, these columns were processed as integers, so the wait was actually computed as 1830 - 39, which gives us our results of 1791. 1791 minutes would be nearly 30 hours, which is a *very* long wait and violates our where clause `f.day = 1` for both legs of the trip.  
+But, if we look closer, **we can see that `lay_over_wait` column wasn't created in the way we intended.** The wait should actually be the amount of time between 12:39 a.m. and 6:30 p.m., which would be about 18 hours. However, these columns were not processed as time variables, so the wait was actually computed as 1830 - 39, which gives us our result of 1,791. 1,791 minutes would be nearly 30 hours, which is a *very* long wait and violates our where clause `f.day = 1` for both legs of the trip.  
 
 After searching all over [sqlite.org](https://www.sqlite.org/) and [Stack Overflow](https://stackoverflow.com/), it seems that fixing this type of issue isn't a strong suit of SQLite. We still can pull this off, though! The best solution I've been able to come up with is to duplicate the flights table, insert a colon in the `scheduled_departure` and `scheduled_arrival` columns, and then use `julianday()` to calculate the `lay_over_wait_time`. Going into further detail is beyond the scope of this markdown, but feel free to share any other solutions to solve this problem a little more elegantly.   
 
@@ -197,7 +197,10 @@ This finally gives us the result we were looking for:
 
 ![q3 image](https://github.com/rjweis/sql-queries/blob/master/q3v1.PNG)  
 
-**4. Provide the query that allows you to answer the following question:  Which non-stop route has the most cancelled flights in 2015? (CANCELLED -- Flight Cancelled (1 = cancelled))**  
+**4. Provide the query that allows you to answer the following question:  Which non-stop route has the most cancelled flights in 2015?**  
+
+The main idea of this question is to use *both* the `origin_airport` and `destination_airport` columns in our `groupby` clause. This means that each unique pairing of `origin_airport` to `destination_airport` will serve as our 'group' (i.e., the non-stop routes we're looking for). As long as we remember to filter the data for only the cancelled flights (`where cancelled = 1`), we have everything we need to write this query.   
+
 ```SQL
 select origin_airport, destination_airport, count(cancelled) as number_of_cancelled_flights
 from delays.flights
@@ -209,7 +212,10 @@ order by number_of_cancelled_flights desc;
   <img src="https://github.com/rjweis/sql-queries/blob/master/q4.PNG">
 </p>  
 
-**5. Provide the query that allows you to answer the following question:  Which airlines have the most cancelled flights due to Airline/Carrier cancellation reasons? – Your report should list: AIRLINE CODE, AIRLINE NAME, and the count of flights cancelled due to the specified reasons. Order your report by descending count. (CANCELLATION_REASON: A - Airline/Carrier; B - Weather; C - National Air System; D - Security)**  
+**5. Provide the query that allows you to answer the following question:  Which airlines have the most cancelled flights due to Airline/Carrier cancellation reasons? – Your report should list: AIRLINE CODE, AIRLINE NAME, and the count of flights cancelled due to the specified reasons. Order your report by descending count. (CANCELLATION_REASON: A - Airline/Carrier; B - Weather; C - National Air System; D - Security)** 
+  
+The same logic from the previous question applies here. Since we're wanting the amount of cancelled flights for each airline, we need to use `groupby`. We'll also filter the data for `where cancellation_reason = 'A'`.
+
 ```SQL
 select airline, count(cancellation_reason) as number_of_airline_cancellations
 from delays.flights
