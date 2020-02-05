@@ -228,12 +228,17 @@ order by number_of_airline_cancellations desc;
 </p>  
 
 **6. Provide the query that allows you to answer the following question: Which day of the week has the longest average taxi out. (day_of_week: 1--7, 1 = Monday, 2 = Tuesday, etc)**  
+
+To calculate the longest average taxi out time, we can simply use `avg(taxi_out)`. Since we want the average taxi out time for each day, we will need to use `groupby(day_of_week)`.  
+
 ```SQL
 select avg(taxi_out), day_of_week
 from delays.flights
 group by day_of_week
 order by avg(taxi_out) desc;
 ```  
+It's interesting that Saturday and Sunday have the lowest average taxi out times. It would be interesting to see if these times correlate with number of passengers travelling per day, airline, travel route, etc.  
+
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/q6.PNG">
 </p>  
