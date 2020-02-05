@@ -93,7 +93,7 @@ Surprisingly, the airport with the most departures is ATL in Atlanta, Georgia! I
 
 Out of all the questions for this assignment, this one is by far the trickiest. Why? Because we need *one-stop flights*, but our data only has *direct-flights*.  
   
-However, we can use the fact that the returned records need to begin at BOS and end at SFO to help us think through this problem. Essentially, our query will have two `origin_airport` columns and two `destination_airport` columns. Lets think about it like this:  
+However, we can use the fact that the returned records need to begin at BOS and end at SFO to help us think through this problem. Essentially, our query will have two `origin_airport` columns and two `destination_airport` columns. Let's think about it like this:  
 
 <p align="center"><strong>origin_airport1 --> destination_airport1 --> origin_airport2 --> destination_airport2</strong></p>  
   
