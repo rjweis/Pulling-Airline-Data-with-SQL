@@ -242,7 +242,7 @@ order by avg(taxi_out) desc;
   <img src="https://github.com/rjweis/sql-queries/blob/master/q6.PNG">
 </p>  
   
-It's interesting that Saturday and Sunday have the lowest average taxi out times. It would be interesting to see if these times correlate with number of passengers travelling per day, airline, travel route, etc.  
+It's interesting that Saturday and Sunday have the lowest average taxi out times. It would be interesting to see if these times correlate with the number of passengers travelling per day, airline, travel route, etc.  
 
 **7. Compute the total departure delay of each airline across all flights. Some departure delays may be negative (indicating an early departure); they should reduce the total, so you don't need to handle them specially. Name the output columns AIRLINE and DELAY. Order the report by ascending airline.**  
 ```SQL
