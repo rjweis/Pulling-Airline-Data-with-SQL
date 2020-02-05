@@ -2,7 +2,7 @@
 ![airport](https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fdam%2Fimageserve%2F1149089169%2F960x0.jpg%3Ffit%3Dscale)  
 *Image Credit: Forbes/Getty*
 ### Introduction 
-Extracting, transforming, and loading data is a vital skill for any analytics professional. In this markdown, we'll take a look at some queries I completed for an assignment at the [Institute for Advanced Analytics.](https://analytics.ncsu.edu/)  
+Extracting, transforming, and loading data is a vital skill for any analytics professional. In this markdown, we'll take a look at some queries I completed for an assignment at the [Institute for Advanced Analytics](https://analytics.ncsu.edu/) to develop this skill. 
 
 This assignment is about extracting information from a database to answer questions one would have about airline travel. The database contains three tables -- airlines, airports, and flights -- and they can be found [here.](https://www.kaggle.com/usdot/flight-delays#flights.csv)  
 
