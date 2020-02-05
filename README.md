@@ -246,7 +246,7 @@ It's interesting that Saturday and Sunday have the lowest average taxi out times
 
 **7. Compute the total departure delay of each airline across all flights. Some departure delays may be negative (indicating an early departure); they should reduce the total, so you don't need to handle them specially. Name the output columns AIRLINE and DELAY. Order the report by ascending airline.**  
 
-Similarly to the above query, we'll now the `sum()` function to get the total delay times. To compute these totals for each airline, we'll use `group by airline`.
+Similarly to the above query, we'll now use the `sum()` function to get the total delay times. To compute these totals for each airline, we'll use `group by airline`.
 ```SQL
 select airline as AIRLINE, sum(departure_delay) as DELAY
 from delays.flights
