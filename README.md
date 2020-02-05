@@ -115,7 +115,7 @@ Also, we must keep in mind that we need ample time at our layover to switch flig
 
 <p align="center"><strong>scheduled_departure_from_origin_airport2 - scheduled_arrival_at_destination_airport1 > 60</strong></p>
   
-Now that we have figured out the logic, let's write the query. I find it helpful to break down the flight into a `first_leg` and `second_leg`, which is what I named first and second subqueries respectively. I also used other aliases in the query to try to make the code a bit more intuitive.   
+Now that we have figured out the logic, let's write the query. I find it helpful to break down the flight into a `first_leg` and `second_leg`, which is what I named first and second subqueries respectively. 
 
 ```SQL
 select first_leg.*, second_leg.*, scheduled_departure_from_layover-scheduled_arrival_at_layover as lay_over_wait
