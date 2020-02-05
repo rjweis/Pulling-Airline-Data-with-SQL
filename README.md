@@ -33,7 +33,7 @@ will give us the following:
 </p>  
   
   
-We can see that there is not there is not a single ID column that exists in all the tables. However, we do see that `AIRLINE` is contained in both the airlines table and the flights table. Also, `AIRPORT` or `ACODE` from the airports table will likely join to the flights table on `ORIGIN_AIRPORT` and `DESTINATION_AIRPORT`. We can run a simple query to view these columns and see which one we'll need. 
+We can see that there is not there is not a single ID column that exists in all the tables. However, we do see that `AIRLINE` is contained in both the airlines table and the flights table. Also, it looks like either `AIRPORT` or `ACODE` from the airports table will join to the flights table on `ORIGIN_AIRPORT` and `DESTINATION_AIRPORT`. We can run a simple query to view these columns and see which one we'll need. 
 ```SQL
 select distinct a.airport, a.acode, f.origin_airport, f.destination_airport
 from delays.airports as a, delays.flights as f
