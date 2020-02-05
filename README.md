@@ -214,7 +214,7 @@ order by number_of_cancelled_flights desc;
 
 **5. Provide the query that allows you to answer the following question:  Which airlines have the most cancelled flights due to Airline/Carrier cancellation reasons? – Your report should list: AIRLINE CODE, AIRLINE NAME, and the count of flights cancelled due to the specified reasons. Order your report by descending count. (CANCELLATION_REASON: A - Airline/Carrier; B - Weather; C - National Air System; D - Security)** 
   
-The same logic from the previous question applies here. Since we're wanting the amount of cancelled flights for each airline, we need to use `groupby`. We'll also filter the data for `where cancellation_reason = 'A'`.
+The same logic from the previous question applies here. Since we're wanting the amount of cancelled flights for each airline, we need to use `group by`. We'll also filter the data for `where cancellation_reason = 'A'`.
 
 ```SQL
 select airline, count(cancellation_reason) as number_of_airline_cancellations
@@ -229,7 +229,7 @@ order by number_of_airline_cancellations desc;
 
 **6. Provide the query that allows you to answer the following question: Which day of the week has the longest average taxi out. (day_of_week: 1--7, 1 = Monday, 2 = Tuesday, etc)**  
 
-To calculate the longest average taxi out time, we can simply use `avg(taxi_out)`. Since we want the average taxi out time for each day, we will need to use `groupby(day_of_week)`.  
+To calculate the longest average taxi out time, we can simply use `avg(taxi_out)`. Since we want the average taxi out time for each day, we will need to use `group by day_of_week`.  
 
 ```SQL
 select avg(taxi_out), day_of_week
@@ -245,6 +245,8 @@ order by avg(taxi_out) desc;
 It's interesting that Saturday and Sunday have the lowest average taxi out times. It would be interesting to see if these times correlate with the number of passengers travelling per day, airline, travel route, etc.  
 
 **7. Compute the total departure delay of each airline across all flights. Some departure delays may be negative (indicating an early departure); they should reduce the total, so you don't need to handle them specially. Name the output columns AIRLINE and DELAY. Order the report by ascending airline.**  
+
+Similarly to the above query, we'll now the `sum()` function to get the total delay times. To compute these totals for each airline, we'll use `group by airline`.
 ```SQL
 select airline as AIRLINE, sum(departure_delay) as DELAY
 from delays.flights
