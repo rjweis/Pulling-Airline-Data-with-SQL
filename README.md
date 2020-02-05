@@ -199,7 +199,7 @@ This finally gives us the result we were looking for:
 
 **4. Provide the query that allows you to answer the following question:  Which non-stop route has the most cancelled flights in 2015?**  
 
-The main idea of this question is to use *both* the `origin_airport` and `destination_airport` columns in our `groupby` clause. This means that each unique pairing of `origin_airport` to `destination_airport` will serve as our 'group' (i.e., the non-stop routes we're looking for). As long as we remember to filter the data for only the cancelled flights (`where cancelled = 1`), we have everything we need to write this query.   
+The main idea of this question is to use *both* the `origin_airport` and `destination_airport` columns in our `groupby` clause. This means that each unique pairing of `origin_airport` to `destination_airport` will serve as our 'group' (i.e., the non-stop routes we're looking for). As long as we remember to filter the data for only the cancelled flights (i.e., `where cancelled = 1`), we have everything we need to write this query.   
 
 ```SQL
 select origin_airport, destination_airport, count(cancelled) as number_of_cancelled_flights
