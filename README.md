@@ -1,4 +1,4 @@
-# Pulling Airline Data with SQL    
+# Pulling Airline Data with SQLite    
 ![airport](https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fdam%2Fimageserve%2F1149089169%2F960x0.jpg%3Ffit%3Dscale)  
 *Image Credit: Forbes/Getty*
 ### Introduction 
