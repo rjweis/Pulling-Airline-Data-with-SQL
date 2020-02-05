@@ -257,7 +257,10 @@ order by airline asc;
   <img src="https://github.com/rjweis/sql-queries/blob/master/q7.PNG">
 </p>  
 
-**8. Find the names of all airlines that ever had more than 100 cancellations in one day (i.e., a specific day/month). Return only the names of the airlines (not airline code). Do not return any duplicates (i.e., airlines with the exact same name).**   
+**8. Find the names of all airlines that ever had more than 100 cancellations in one day (i.e., a specific day/month). Return only the names of the airlines (not airline code). Do not return any duplicates (i.e., airlines with the exact same name).**  
+
+The challenging aspects of this query is ensure that we join `airlines` and `flights` properly by using `airlines.code = flights.airline`. Further, after grouping by each unique pairing of airline, month, and day, we need to filter out these groups for airlines that have more than 100 cancelled flights. This can be accomplished with `having count(cancelled) > 100`.  
+
 ```SQL
 select distinct a.airline
 from delays.airlines as a, delays.flights as f 
