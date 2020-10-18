@@ -35,9 +35,9 @@ will give us the following:
   
 We can see that there is not there is not a single ID column that exists in all the tables. However, we do see that `AIRLINE` is contained in both the airlines table and the flights table. Also, it looks like either `AIRPORT` or `ACODE` from the airports table will join to the flights table on `ORIGIN_AIRPORT` and `DESTINATION_AIRPORT`. We can run a simple query to view these columns and see which one we'll need. 
 ```SQL
-select distinct a.airport, a.acode, f.origin_airport, f.destination_airport
-from delays.airports as a, delays.flights as f
-limit 5;
+SELECT DISTINCT a.airport, a.acode, f.origin_airport, f.destination_airport
+FROM delays.airports as a, delays.flights as f
+LIMIT 5;
 ```  
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/q1_prep.PNG">
@@ -51,16 +51,16 @@ It turns out that `ACODE` is the column we'll be using to join the airports and 
 For this query, we need to get data from both the airports and flights tables. `origin_airport` and `destination_airport` are the airport codes from the flights table, so to get their respective names from the airports table we can use subqueries. `where a.acode = f.origin_airport` and `where a.acode = f.destination_airport` will help us get this information. 
 
 ```SQL
-select distinct origin_airport, 
-    (select airport
-    from airports as a
-    where a.acode = f.origin_airport) as origin_airport_name,
+SELECT DISTINCT origin_airport, 
+    (SELECT airport
+    FROM airports AS a
+    WHERE a.acode = f.origin_airport) AS origin_airport_name,
     destination_airport, 
-    (select airport
-    from airports as a
-    where a.acode = f.destination_airport) as destination_airport_name,
+    (SELECT airport
+    FROM airports AS a
+    WHERE a.acode = f.destination_airport) AS destination_airport_name,
     distance
-from airports as a, flights as f;
+FROM airports AS a, flights AS f;
 ```  
 Now, we know the distance between these airports:  
 
@@ -73,10 +73,10 @@ Now, we know the distance between these airports:
 To answer this question, we need to determine if we'll use `origin_airport` or `destination_airport` for our query. We know that for each airport, we want the count of all departing flights. In other words, we want the destination airports, which we can obtain with `count(destination_airport)`. To get the count for *each* airport, we can use `group by origin_airport`. Then, to see which airport has the most, we can simply order our query in descending order with `desc` and use the first row to answer this question.  
 
 ```SQL
-select origin_airport, count(destination_airport) as number_of_departing_flights
-from delays.flights
-group by origin_airport
-order by number_of_departing_flights desc;
+SELECT origin_airport, count(destination_airport) AS number_of_departing_flights
+FROM delays.flights
+GROUP BY origin_airport
+ORDER BY number_of_departing_flights desc;
 ```  
   
 <p align="center">
@@ -115,36 +115,37 @@ Also, we must keep in mind that we need ample time at our layover to switch flig
 
 <p align="center"><strong>scheduled_departure_from_origin_airport2 - scheduled_arrival_at_destination_airport1 > 60</strong></p>
   
-Now that we have figured out the logic, let's write the query. I find it helpful to break down the flight into a `first_leg` and `second_leg`, which is what I named first and second subqueries respectively. 
+Now that we have figured out the logic, let's write the query. I find it helpful to break down the flight into a `first_leg` and `second_leg`, which is what I named the first and second subqueries respectively. 
 
 ```SQL
-select first_leg.*, second_leg.*, scheduled_departure_from_layover-scheduled_arrival_at_layover as lay_over_wait
-from (select 
-        flight_number as first_flight_number, 
+SELECT first_leg.*, second_leg.*, scheduled_departure_from_layover-scheduled_arrival_at_layover AS lay_over_wait
+FROM (SELECT 
+        flight_number AS first_flight_number, 
         origin_airport, 
-        scheduled_arrival as scheduled_arrival_at_layover, 
-        destination_airport as lay_over_one
-        from delays.flights as f
-        where f.origin_airport = "BOS" and f.destination_airport != "SFO" and
-        f.month = 1 and
-        f.day = 1 and 
-        f.day_of_week= 4
-        ) as first_leg,
+        scheduled_arrival AS scheduled_arrival_at_layover, 
+        destination_airport AS lay_over_one
+        FROM delays.flights AS f
+        WHERE f.origin_airport = "BOS" AND f.destination_airport != "SFO" AND
+        f.month = 1 AND
+        f.day = 1 AND 
+        f.day_of_week = 4
+        ) AS first_leg,
         
-    (select 
-        origin_airport as lay_over_two, 
+    (SELECT 
+        origin_airport AS lay_over_two, 
         destination_airport, 
-        scheduled_departure as scheduled_departure_from_layover, 
-        flight_number as second_flight_number
-        from delays.flights as f
-        where f.origin_airport != "BOS" and f.destination_airport = "SFO" and
-        f.month = 1 and
-        f.day = 1 and 
-        f.day_of_week= 4) as second_leg
+        scheduled_departure AS scheduled_departure_from_layover, 
+        flight_number AS second_flight_number
+        FROM delays.flights AS f
+        WHERE f.origin_airport != "BOS" AND f.destination_airport = "SFO" AND
+        f.month = 1 AND
+        f.day = 1 AND 
+        f.day_of_week = 4
+        ) AS second_leg
         
-where lay_over_one = lay_over_two and 
+WHERE lay_over_one = lay_over_two AND 
     lay_over_wait > 60
-order by lay_over_wait desc; 
+ORDER BY lay_over_wait DESC; 
 ```  
 ![q3 image](https://github.com/rjweis/sql-queries/blob/master/q3.PNG)
  
@@ -155,43 +156,44 @@ But, if we look closer, we can see that something is wrong in the `lay_over_wait
 After searching all over [sqlite.org](https://www.sqlite.org/) and [Stack Overflow](https://stackoverflow.com/), it seems that fixing this type of issue isn't a strong suit of SQLite. The best solution I've been able to come up with is to duplicate the flights table, insert a colon in the `scheduled_departure` and `scheduled_arrival` columns so that they can be processed as time variables, and then use `julianday()` to calculate the `lay_over_wait_time`. Going into further detail is beyond the scope of this markdown, but feel free to share any other solutions to solve this problem a little more elegantly.   
 
 ```SQL
-create table delays.flights_v1 as
-select *, 
-    cast(
-        substr(scheduled_departure, 1, 2) || ':' || substr(scheduled_departure, 3, 2) as text) as new_scheduled_arrival,
-    cast(
-        substr(scheduled_arrival, 1, 2) || ':' || substr(scheduled_arrival, 3, 2) as text) as new_scheduled_departure
-from delays.flights;
+CREATE table delays.flights_v1 AS
+SELECT *, 
+    CAST(
+        SUBSTR(scheduled_departure, 1, 2) || ':' || SUBSTR(scheduled_departure, 3, 2) AS TEXT) AS new_scheduled_arrival,
+    CAST(
+        SUBSTR(scheduled_arrival, 1, 2) || ':' || SUBSTR(scheduled_arrival, 3, 2) AS TEXT) AS new_scheduled_departure
+FROM delays.flights;
 
-select first_leg.*, second_leg.*, cast((
-    julianday(scheduled_departure_from_layover) - julianday(scheduled_arrival_at_layover)
-    ) * 24 * 60 as intgeger) as lay_over_wait
-from (select 
-        distinct flight_number as first_flight_number, 
+SELECT first_leg.*, second_leg.*, CAST((
+    JULIANDAY(scheduled_departure_from_layover) - JULIANDAY(scheduled_arrival_at_layover)
+    ) * 24 * 60 AS intgeger) AS lay_over_wait
+FROM (SELECT 
+        flight_number AS first_flight_number, 
         origin_airport, 
-        new_scheduled_arrival as scheduled_arrival_at_layover, 
-        destination_airport as lay_over_one
-        from flights_v1 as f
-        where f.origin_airport = "BOS" and f.destination_airport != "SFO" and
-        f.month = 1 and
-        f.day = 1 and 
-        f.day_of_week= 4
-        ) as first_leg,
+        scheduled_arrival AS scheduled_arrival_at_layover, 
+        destination_airport AS lay_over_one
+        FROM delays.flights AS f
+        WHERE f.origin_airport = "BOS" AND f.destination_airport != "SFO" AND
+        f.month = 1 AND
+        f.day = 1 AND 
+        f.day_of_week = 4
+        ) AS first_leg,
         
-    (select 
-        origin_airport as lay_over_two, 
+    (SELECT 
+        origin_airport AS lay_over_two, 
         destination_airport, 
-        new_scheduled_departure as scheduled_departure_from_layover, 
-        flight_number as second_flight_number
-        from flights_v1 as f
-        where f.origin_airport != "BOS" and f.destination_airport = "SFO" and
-        f.month = 1 and
-        f.day = 1 and 
-        f.day_of_week= 4) as second_leg
+        scheduled_departure AS scheduled_departure_from_layover, 
+        flight_number AS second_flight_number
+        FROM delays.flights AS f
+        WHERE f.origin_airport != "BOS" AND f.destination_airport = "SFO" AND
+        f.month = 1 AND
+        f.day = 1 AND 
+        f.day_of_week = 4
+        ) AS second_leg
         
-where lay_over_one = lay_over_two and 
+WHERE lay_over_one = lay_over_two AND 
     lay_over_wait > 60
-order by lay_over_wait desc; 
+ORDER BY lay_over_wait DESC; 
 ```  
 This finally gives us the result we were looking for:  
 
@@ -202,11 +204,11 @@ This finally gives us the result we were looking for:
 The main idea of this question is to use *both* the `origin_airport` and `destination_airport` columns in our `groupby` clause. This means that each unique pairing of `origin_airport` to `destination_airport` will serve as our 'group' (i.e., the non-stop routes we're looking for). As long as we remember to filter the data for only the cancelled flights (i.e., `where cancelled = 1`), we have everything we need to write this query.   
 
 ```SQL
-select origin_airport, destination_airport, count(cancelled) as number_of_cancelled_flights
-from delays.flights
-where cancelled = 1
-group by origin_airport, destination_airport
-order by number_of_cancelled_flights desc;
+SELECT origin_airport, destination_airport, COUNT(cancelled) AS number_of_cancelled_flights
+FROM delays.flights
+WHERE cancelled = 1
+GROUP BY origin_airport, destination_airport
+ORDER BY number_of_cancelled_flights desc;
 ```  
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/q4.PNG">
@@ -217,11 +219,11 @@ order by number_of_cancelled_flights desc;
 The same logic from the previous question applies here. Since we're wanting the amount of cancelled flights for each airline, we need to use `group by`. We'll also filter the data for `where cancellation_reason = 'A'`.
 
 ```SQL
-select airline, count(cancellation_reason) as number_of_airline_cancellations
-from delays.flights
-where cancellation_reason = 'A'
-group by airline
-order by number_of_airline_cancellations desc;
+SELECT airline, count(cancellation_reason) AS number_of_airline_cancellations
+FROM delays.flights
+WHERE cancellation_reason = 'A'
+GROUP BY airline
+ORDER BY number_of_airline_cancellations desc;
 ```  
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/q5.PNG">
@@ -232,10 +234,10 @@ order by number_of_airline_cancellations desc;
 To calculate the longest average taxi out time, we can simply use `avg(taxi_out)`. Since we want the average taxi out time for each day, we will need to use `group by day_of_week`.  
 
 ```SQL
-select avg(taxi_out), day_of_week
-from delays.flights
-group by day_of_week
-order by avg(taxi_out) desc;
+SELECT AVG(taxi_out), day_of_week
+FROM delays.flights
+GROUP BY day_of_week
+ORDER BY avg(taxi_out) DESC;
 ```  
 
 <p align="center">
@@ -248,10 +250,10 @@ It's interesting that Saturday and Sunday have the lowest average taxi out times
 
 Similarly to the above query, we'll now use the `sum()` function to get the total delay times. To compute these totals for each airline, we'll use `group by airline`.
 ```SQL
-select airline as AIRLINE, sum(departure_delay) as DELAY
-from delays.flights
-group by airline
-order by airline asc;
+SELECT airline as AIRLINE, sum(departure_delay) as DELAY
+FROM delays.flights
+GROUP BY airline
+ORDER BY airline asc;
 ```  
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/q7.PNG">
@@ -262,12 +264,12 @@ order by airline asc;
 For this query, we need to ensure that we join the `airlines` and `flights` tables properly by using `airlines.code = flights.airline`. Further, after grouping by each unique pairing of `airline`, `month`, and `day`, we need to filter out these groups for airlines that have more than 100 cancelled flights. This can be accomplished with `having count(cancelled) > 100`.  
 
 ```SQL
-select distinct a.airline
-from delays.airlines as a, delays.flights as f 
-where cancelled = 1
-    and a.code = f.airline
-group by a.airline, month, day
-having count(cancelled) > 100;
+SELECT distinct a.airline
+FROM delays.airlines AS a, delays.flights AS f 
+WHERE cancelled = 1
+    AND a.code = f.airline
+GROUP BY a.airline, month, day
+HAVING COUNT(cancelled) > 100;
 ```  
 <p align="center">
   <img src="https://github.com/rjweis/sql-queries/blob/master/q8.PNG">
